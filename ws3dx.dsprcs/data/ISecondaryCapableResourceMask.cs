@@ -51,20 +51,20 @@ namespace ws3dx.dsprcs.data
       //----------------------------------------------------------------
       // <summary>
       //		
-      // Description: Resource time const real value Example: 0
+      // Description: Resource time const real value Example: 10.5
       //
       // </summary>
       //----------------------------------------------------------------
-      public double RscTimeConst { get; set; }
+      public double? RscTimeConst { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
       //		
-      // Description: Resource time per quantity to produced per time real value Example: 0
+      // Description: Resource time per quantity to produced per time real value Example: 20.5
       //
       // </summary>
       //----------------------------------------------------------------
-      public double RscTimePerQtyToProducedPerTime { get; set; }
+      public double? RscTimePerQtyToProducedPerTime { get; set; }
 
       public ITypedUriIdentifier Resource { get; set; }
 

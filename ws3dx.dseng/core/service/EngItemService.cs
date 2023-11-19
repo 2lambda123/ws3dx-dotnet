@@ -113,11 +113,58 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------		
       public async Task<T> GetInstance<T>(string engItemId, string instanceId)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceMaskFilterable), typeof(IEngInstanceMaskPosition), typeof(IEngInstanceDefaultMask), typeof(IEngInstanceDetailsMask) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceFilterableMask), typeof(IEngInstancePositionMask), typeof(IEngInstanceDetailsMask), typeof(IEngInstanceDefaultMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance/{instanceId}";
 
          return await GetIndividualFromResponseMemberProperty<T>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (GET) dseng:EngItem/{PID}/dseng:EngRepInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Gets a Engineering Item Representation Instance Summary: Gets a Engineering Item 
+      // Representation Instance
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // <param name="instanceId">
+      // Description: dseng:EngRepInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------		
+      public async Task<T> GetRepInstance<T>(string engItemId, string repInstanceId)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngRepInstanceDetailMask), typeof(IEngInstanceDefaultMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance/{repInstanceId}";
+
+         return await GetIndividualFromResponseMemberProperty<T>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (GET) dseng:EngItem/{ID}/dseng:EngRepInstance
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Engineering Item Representation Instance Summary: Gets all the Engineering Item 
+      // Representation Instances.
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------		
+      public async Task<IEnumerable<T>> GetRepInstances<T>(string engItemId)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngRepInstanceDetailMask), typeof(IEngInstanceDefaultMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance";
+
+         return await GetCollectionFromResponseMemberProperty<T>(resourceURI);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -176,11 +223,11 @@ namespace ws3dx.dseng.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------		
-      public async Task<IChangeControlMaskStatus> GetChangeControl(string engItemId)
+      public async Task<IChangeControlStatusMask> GetChangeControl(string engItemId)
       {
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dslc:changeControl";
 
-         return await GetIndividual<IChangeControlMaskStatus>(resourceURI);
+         return await GetIndividual<IChangeControlStatusMask>(resourceURI);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -200,7 +247,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------		
       public async Task<T> GetAlternate<T>(string engItemId, string alternateId)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMaskDefault), typeof(IAlternateMaskDetail) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMask), typeof(IAlternateDetailMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:Alternate/{alternateId}";
 
@@ -223,11 +270,11 @@ namespace ws3dx.dseng.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------		
-      public async Task<IEnumerable<IFilterableDetail>> GetInstanceEffectivity(string engItemId, string instanceId)
+      public async Task<IEnumerable<IFilterableDetailMask>> GetInstanceEffectivity(string engItemId, string instanceId)
       {
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance/{instanceId}/dscfg:Filterable";
 
-         return await GetCollectionFromResponseMemberProperty<IFilterableDetail>(resourceURI);
+         return await GetCollectionFromResponseMemberProperty<IFilterableDetailMask>(resourceURI);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -245,7 +292,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------		
       public async Task<IEnumerable<T>> GetAlternates<T>(string engItemId)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMaskDefault), typeof(IAlternateMaskDetail) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMask), typeof(IAlternateDetailMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:Alternate";
 
@@ -266,7 +313,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------		
       public async Task<IEnumerable<T>> GetInstances<T>(string engItemId)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceMaskFilterable), typeof(IEngInstanceMaskPosition), typeof(IEngInstanceDefaultMask), typeof(IEngInstanceDetailsMask) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceFilterableMask), typeof(IEngInstancePositionMask), typeof(IEngInstanceDetailsMask), typeof(IEngInstanceDefaultMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance";
 
@@ -312,6 +359,93 @@ namespace ws3dx.dseng.core.service
          return await PostIndividual<IGenericResponse, IAddEmpty>(resourceURI, request);
       }
 
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dseng:EngItem/bulkfetch
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Get multiple Engineering Items which are Indexed. API Works only for Indexed Data. 
+      // The customer attributes or enterprise extension attributes are returned only with default sixw 
+      // mapping ds6wg:TypeName.AttributeName and it is not supported if the sixw predicate is changed. 
+      // Summary: Get multiple Engineering Items which are indexed
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<(IList<T>, IList<string>)> BulkFetch<T>(string[] request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngItemDefaultMask), typeof(IEngItemDetailsMask), typeof(IEngItemCommonMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/bulkfetch";
+
+         return await PostBulkCollection<T, string[]>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dseng:EngItem/{PID}/dseng:EngRepInstance/{ID}/replace
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Replace the Engineering Item Representation Instance Summary: Replace the Engineering 
+      // Item Representation Instance
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // <param name="instanceId">
+      // Description: dseng:EngRepInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<T> ReplaceRepInstance<T>(string engItemId, string repInstanceId, IEngRepInstanceReplace request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngRepInstanceDetailMask), typeof(IEngInstanceDefaultMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance/{repInstanceId}/replace";
+
+         return await PostIndividualFromResponseMemberProperty<T, IEngRepInstanceReplace>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dseng:EngItem/{ID}/dseng:EngRepInstance
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Engineering Representation Instance to an Engineering Item. Summary: Create 
+      // Engineering Representation Instances
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<T>> AddRepInstance<T>(string engItemId, ICreateEngRepInstances request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngRepInstanceDetailMask), typeof(IEngInstanceDefaultMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance";
+
+         return await PostCollectionFromResponseMemberProperty<T, ICreateEngRepInstances>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dseng:EngItem/bulkupdate
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies multiple Engineering Item attributes Summary: Modifies multiple Engineering 
+      // Item attributes
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<(IList<T>, IList<string>)> BulkUpdate<T>(IEngItemBulkUpdateItem[] request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngItemDefaultMask), typeof(IEngItemDetailsMask), typeof(IEngItemCommonMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/bulkupdate";
+
+         return await PostBulkCollection<T, IEngItemBulkUpdateItem[]>(resourceURI, request);
+      }
+     
       //---------------------------------------------------------------------------------------------
       // <remarks>
       // (POST) dseng:EngItem/{PID}/dseng:EngInstance/{ID}/dscfg:Filterable/set/evolution
@@ -367,7 +501,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<T>> ReplaceInstance<T>(string engItemId, string instanceId, IEngInstanceReplace request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceMaskFilterable), typeof(IEngInstanceDefaultMask), typeof(IEngInstanceDetailsMask) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceFilterableMask), typeof(IEngInstanceDetailsMask), typeof(IEngInstanceDefaultMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance/{instanceId}/replace";
 
@@ -510,7 +644,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<T>> AddInstance<T>(string engItemId, ICreateEngInstances request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceMaskFilterable), typeof(IEngInstanceMaskPosition), typeof(IEngInstanceDefaultMask), typeof(IEngInstanceDetailsMask) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceFilterableMask), typeof(IEngInstancePositionMask), typeof(IEngInstanceDetailsMask), typeof(IEngInstanceDefaultMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance";
 
@@ -578,7 +712,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<T> UpdateInstance<T>(string engItemId, string instanceId, IEngInstancePatch request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceMaskFilterable), typeof(IEngInstanceMaskPosition), typeof(IEngInstanceDefaultMask), typeof(IEngInstanceDetailsMask) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngInstanceFilterableMask), typeof(IEngInstancePositionMask), typeof(IEngInstanceDetailsMask), typeof(IEngInstanceDefaultMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance/{instanceId}";
 
@@ -631,6 +765,31 @@ namespace ws3dx.dseng.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (PATCH) dseng:EngItem/{PID}/dseng:EngRepInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies the Engineering Item Representation Instance attributes Summary: Modifies 
+      // the Engineering Item Representation Instance attributes
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // <param name="instanceId">
+      // Description: dseng:EngRepInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<T> UpdateRepInstance<T>(string engItemId, string repInstanceId, IEngRepInstancePatch request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IEngRepInstanceDetailMask), typeof(IEngInstanceDefaultMask) });
+
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance/{repInstanceId}";
+
+         return await PatchIndividualFromResponseMemberProperty<T, IEngRepInstancePatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (DELETE) dseng:EngItem/{ID}
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -669,6 +828,29 @@ namespace ws3dx.dseng.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (DELETE) dseng:EngItem/{PID}/dseng:EngRepInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Deletes the Engineering Item Representation Instance Summary: Deletes the Engineering 
+      // Item Representation Instance
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // <param name="instanceId">
+      // Description: dseng:EngRepInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEmpty> DeleteRepInstance(string engItemId, string repInstanceId)
+      {
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngRepInstance/{repInstanceId}";
+
+         return await DeleteIndividual<IEmpty>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (DELETE) dseng:EngItem/{PID}/dseng:Alternate/{ID}
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -691,6 +873,28 @@ namespace ws3dx.dseng.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (DELETE) dseng:EngItem/{PID}/dseng:EngInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Deletes the Engineering Item Instance Summary: Deletes the Engineering Item Instance
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // <param name="instanceId">
+      // Description: dseng:EngInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEmpty> DeleteInstance(string engItemId, string instanceId)
+      {
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:EngInstance/{instanceId}";
+
+         return await DeleteIndividual<IEmpty>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (POST) dseng:EngItem/{ID}/dseng:Alternate
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -704,7 +908,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<T>> AddAlternate<T>(string engItemId, IAddAlternates request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMaskDefault), typeof(IAlternateMaskDetail) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMask), typeof(IAlternateDetailMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:Alternate";
 
@@ -726,7 +930,7 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<T>> AddAlternate<T>(string engItemId, IAddAlternatesParent request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMaskDefault), typeof(IAlternateMaskDetail) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMask), typeof(IAlternateDetailMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:Alternate";
 
@@ -748,11 +952,33 @@ namespace ws3dx.dseng.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<T>> AddAlternate<T>(string engItemId, IAddAlternatesInstance request)
       {
-         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMaskDefault), typeof(IAlternateMaskDetail) });
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IAlternateMask), typeof(IAlternateDetailMask) });
 
          string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/dseng:Alternate";
 
          return await PostCollectionFromResponseMemberProperty<T, IAddAlternatesInstance>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dseng:EngItem/{ID}/expand
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Expand Engineering Item based on the expandDepth and filter specified. By default 
+      // expandDepth is 1 and no filter is applied. Only the first 10000 results will be fetched with 
+      // default Mask dskern:Mask.Default applied. no option to change the Mask. Summary: Expand Engineering 
+      // Item using indexed queries
+      // <param name="engItemId">
+      // Description: dseng:EngItem object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IExpandResponse> Expand(string engItemId, IExpand request)
+      {
+         string resourceURI = $"{GetBaseResource()}dseng:EngItem/{engItemId}/expand";
+
+         return await PostIndividual<IExpandResponse, IExpand>(resourceURI, request);
       }
    }
 }

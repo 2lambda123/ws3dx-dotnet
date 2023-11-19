@@ -40,7 +40,7 @@ namespace ws3dx.dsdo.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("val")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public bool Val { get; set; }
+      public bool? Val { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>

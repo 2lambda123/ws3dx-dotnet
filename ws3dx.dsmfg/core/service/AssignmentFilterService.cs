@@ -19,7 +19,7 @@ using ws3dx.authentication.data;
 using ws3dx.core.service;
 using ws3dx.dsmfg.data;
 
-namespace service
+namespace ws3dx.dsmfg.core.service
 {
    // SDK Service
    public class AssignmentFilterService : EnoviaBaseService

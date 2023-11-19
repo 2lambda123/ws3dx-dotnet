@@ -57,11 +57,11 @@ namespace ws3dx.dsprcs.data
       //----------------------------------------------------------------
       // <summary>
       //		
-      // Description: Resource quantity real value Example: 1
+      // Description: Resource quantity real value Example: 10.5
       //
       // </summary>
       //----------------------------------------------------------------
-      public double ResourcesQuantity { get; set; }
+      public double? ResourcesQuantity { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -70,7 +70,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public bool IsPreferred { get; set; }
+      public bool? IsPreferred { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -79,7 +79,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public bool ManuallyScheduled { get; set; }
+      public bool? ManuallyScheduled { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -88,16 +88,16 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double Priority { get; set; }
+      public double? Priority { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
       //		
-      // Description: Tool changeover time real value Example: 0
+      // Description: Tool changeover time real value Example: 20.5
       //
       // </summary>
       //----------------------------------------------------------------
-      public double ToolChangeoverTime { get; set; }
+      public double? ToolChangeoverTime { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -106,7 +106,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public bool IsReservedFromFirstStep { get; set; }
+      public bool? IsReservedFromFirstStep { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -115,16 +115,16 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double CapableRscGroupIndex { get; set; }
+      public double? CapableRscGroupIndex { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
       //		
-      // Description: Estimated time real value Example: 0
+      // Description: Estimated time real value Example: 20.5
       //
       // </summary>
       //----------------------------------------------------------------
-      public double EstimatedTime { get; set; }
+      public double? EstimatedTime { get; set; }
 
       //----------------------------------------------------------------
       // <summary>

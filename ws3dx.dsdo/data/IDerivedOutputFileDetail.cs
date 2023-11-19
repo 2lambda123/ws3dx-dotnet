@@ -53,7 +53,7 @@ namespace ws3dx.dsdo.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public bool IsExternal { get; set; }
+      public bool? IsExternal { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -89,7 +89,7 @@ namespace ws3dx.dsdo.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public bool IsSync { get; set; }
+      public bool? IsSync { get; set; }
 
       public IList<IDerivedOutputFileAttributes> StreamAttributes { get; set; }
    }

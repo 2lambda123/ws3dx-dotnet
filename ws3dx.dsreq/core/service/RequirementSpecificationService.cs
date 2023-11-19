@@ -13,16 +13,19 @@
 // BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //------------------------------------------------------------------------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ws3dx.authentication.data;
 using ws3dx.core.service;
 using ws3dx.dsreq.data;
+using ws3dx.shared.data;
+using ws3dx.utils.search;
 
 namespace ws3dx.dsreq.core.service
 {
    // SDK Service
-   public class RequirementSpecificationService : EnoviaBaseService
+   public class RequirementSpecificationService : SearchService
    {
       private const string BASE_RESOURCE = "/resources/v1/modeler/dsreq/";
 
@@ -34,15 +37,50 @@ namespace ws3dx.dsreq.core.service
       {
          return BASE_RESOURCE;
       }
+      #region SearchService overrides
+      protected override string GetSearchResource()
+      {
+         return $"{GetBaseResource()}dsreq:RequirementSpecification/search";
+      }
 
+      protected override IEnumerable<Type> SearchConstraintTypes()
+      {
+         return new List<Type>() { typeof(INewRequirementSpecificationMask) };
+      }
+
+      protected override string GetSearchSkipParamName()
+      {
+         return "$skip";
+      }
+
+      protected override string GetSearchTopParamName()
+      {
+         return "$top";
+      }
+
+      protected override string GetSearchCriteriaParamName()
+      {
+         return "$searchStr";
+      }
+
+      public async Task<IList<T>> Search<T>(SearchQuery searchQuery)
+      {
+         return await SearchCollection<T>("member", searchQuery);
+      }
+
+      public async Task<IList<T>> Search<T>(SearchQuery searchQuery, long _skip, long _top)
+      {
+         return await SearchCollection<T>("member", searchQuery, _skip, _top);
+      }
+      #endregion
       //---------------------------------------------------------------------------------------------
       // <remarks>
       // (GET) /dsreq:RequirementSpecification/{ID}
       // </remarks>
       //---------------------------------------------------------------------------------------------
       // <summary>
-      // Description: Fetch the Requirement Specification with attributes list . Summary: Gets the Requirement 
-      // Specification.
+      // Description: Gets a Requirement Specification with an attributes list. Summary: Gets a Requirement 
+      // Specification
       // <param name="reqSpecId">
       // Description: dsreq:RequirementSpecification object ID
       // </param>
@@ -50,9 +88,49 @@ namespace ws3dx.dsreq.core.service
       //---------------------------------------------------------------------------------------------		
       public async Task<INewRequirementSpecificationMask> Get(string reqSpecId)
       {
-         string resourceURI = $"{GetBaseResource()}/dsreq:RequirementSpecification/{reqSpecId}";
+         string resourceURI = $"{GetBaseResource()}dsreq:RequirementSpecification/{reqSpecId}";
 
          return await GetIndividualFromResponseMemberProperty<INewRequirementSpecificationMask>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (GET) /dsreq:RequirementSpecification/{ID}/dslc:changeControl
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Gets a Change Control of an dsreq:RequirementSpecification Summary: Gets a Change 
+      // Control of an dsreq:RequirementSpecification
+      // <param name="ID">
+      // Description: dsreq:RequirementSpecification object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------		
+      public async Task<IEnumerable<IChangeControlStatusMask>> GetChangeControl(string reqSpecId)
+      {
+         string resourceURI = $"{GetBaseResource()}dsreq:RequirementSpecification/{reqSpecId}/dslc:changeControl";
+
+         return await GetCollectionFromResponseMemberProperty<IChangeControlStatusMask>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) /dsreq:RequirementSpecification/{ID}/dslc:changeControl
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Activate Change Control. Once object is change controlled, a change is required to 
+      // perform any modification on the object. Summary: Activate Change Control
+      // <param name="ID">
+      // Description: dsreq:RequirementSpecification object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IGenericResponse> AttachChangeControl(string reqSpecId, IEmpty request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsreq:RequirementSpecification/{reqSpecId}/dslc:changeControl";
+
+         return await PostIndividual<IGenericResponse, IEmpty>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -61,13 +139,13 @@ namespace ws3dx.dsreq.core.service
       // </remarks>
       //---------------------------------------------------------------------------------------------
       // <summary>
-      // Description: Creates the Requirement Specification with attributes list . Summary: Creates the 
-      // Requirement Specification .
+      // Description: Create Requirement Specifications using payload items. A maximum of 10 items is 
+      // allowed. Summary: Create Requirement Specifications
       // </summary>
       //---------------------------------------------------------------------------------------------
       public async Task<IEnumerable<INewRequirementSpecificationMask>> Create(ICreateRequirementSpecification request)
       {
-         string resourceURI = $"{GetBaseResource()}/dsreq:RequirementSpecification";
+         string resourceURI = $"{GetBaseResource()}dsreq:RequirementSpecification";
 
          return await PostCollectionFromResponseMemberProperty<INewRequirementSpecificationMask, ICreateRequirementSpecification>(resourceURI, request);
       }
@@ -78,8 +156,8 @@ namespace ws3dx.dsreq.core.service
       // </remarks>
       //---------------------------------------------------------------------------------------------
       // <summary>
-      // Description: Update the Requirement Specification with attributes list . Summary: Modifies the 
-      // Requirement Specification attributes.
+      // Description: Modifies the Requirement Specification with an attributes list. attributes Summary: 
+      // Modifies the Requirement Specification attributes
       // <param name="reqSpecId">
       // Description: dsreq:RequirementSpecification object ID
       // </param>
@@ -87,7 +165,7 @@ namespace ws3dx.dsreq.core.service
       //---------------------------------------------------------------------------------------------
       public async Task<INewRequirementSpecificationMask> Update(string reqSpecId, IModifyRequirementSpecification request)
       {
-         string resourceURI = $"{GetBaseResource()}/dsreq:RequirementSpecification/{reqSpecId}";
+         string resourceURI = $"{GetBaseResource()}dsreq:RequirementSpecification/{reqSpecId}";
 
          return await PatchIndividualFromResponseMemberProperty<INewRequirementSpecificationMask, IModifyRequirementSpecification>(resourceURI, request);
       }

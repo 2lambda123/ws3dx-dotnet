@@ -67,13 +67,13 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       //<summary>
       //
-      // Description: Resource quantity real value Example: 1
+      // Description: Resource quantity real value Example: 10.5
       //
       //<summary>
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("resourcesQuantity")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public double ResourcesQuantity { get; set; }
+      public double? ResourcesQuantity { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
@@ -84,7 +84,7 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("isPreferred")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public bool IsPreferred { get; set; }
+      public bool? IsPreferred { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
@@ -95,7 +95,7 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("manuallyScheduled")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public bool ManuallyScheduled { get; set; }
+      public bool? ManuallyScheduled { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
@@ -106,18 +106,18 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("priority")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public double Priority { get; set; }
+      public double? Priority { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
       //
-      // Description: Tool changeover time real value Example: 0
+      // Description: Tool changeover time real value Example: 20.5
       //
       //<summary>
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("toolChangeoverTime")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public double ToolChangeoverTime { get; set; }
+      public double? ToolChangeoverTime { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
@@ -128,7 +128,7 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("isReservedFromFirstStep")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public bool IsReservedFromFirstStep { get; set; }
+      public bool? IsReservedFromFirstStep { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
@@ -139,18 +139,18 @@ namespace ws3dx.dsprcs.core.data.impl
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("capableRscGroupIndex")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public double CapableRscGroupIndex { get; set; }
+      public double? CapableRscGroupIndex { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>
       //
-      // Description: Estimated time real value Example: 0
+      // Description: Estimated time real value Example: 20.5
       //
       //<summary>
       //------------------------------------------------------------------------------------------------
       [JsonPropertyName("estimatedTime")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public double EstimatedTime { get; set; }
+      public double? EstimatedTime { get; set; }
 
       //------------------------------------------------------------------------------------------------
       //<summary>

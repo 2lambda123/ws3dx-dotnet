@@ -255,7 +255,7 @@ namespace ws3dx.core.service
          return __output;
       }
 
-      protected IList<T> DeserializeCollection<T>(string _json, string _wrapperCollectionJsonPropertyName)
+      protected IList<T> DeserializeCollection<T>(string _json, string _wrapperCollectionJsonPropertyName, bool _ignoreIfPropertyNotFound = false)
       {
          IList<T> __output = null;
 
@@ -265,7 +265,7 @@ namespace ws3dx.core.service
 
          try
          {
-            __output = MaskDeserializationHandler.DeserializeCollection<T>(_json, _wrapperCollectionJsonPropertyName);
+            __output = MaskDeserializationHandler.DeserializeCollection<T>(_json, _wrapperCollectionJsonPropertyName, _ignoreIfPropertyNotFound);
          }
          catch (Exception _ex)
          {
@@ -328,7 +328,7 @@ namespace ws3dx.core.service
       {
          return await GetIndividualFromResponseArrayProperty<T>(_requestUri, "member", queryParams, headerParams);
       }
-      
+
       protected async Task<T> GetIndividualFromResponseArrayProperty<T>(string _requestUri, string _wrappingCollectionArrayPropertyName, IDictionary<string, string> queryParams = null, IDictionary<string, string> headerParams = null)
       {
          IList<T> returnSet = await GetCollectionFromResponseArrayProperty<T>(_requestUri, _wrappingCollectionArrayPropertyName, queryParams, headerParams);
@@ -372,7 +372,7 @@ namespace ws3dx.core.service
 
       protected async Task<IList<T>> PostCollectionNoMaskFromResponseMemberProperty<T, P>(string _requestUri, P _payload = null, IDictionary<string, string> queryParams = null, IDictionary<string, string> headerParams = null) where P : class
       {
-         return await PostCollectionNoMaskFromResponseCollectionProperty<T,P>(_requestUri, "member", _payload, queryParams, headerParams);
+         return await PostCollectionNoMaskFromResponseCollectionProperty<T, P>(_requestUri, "member", _payload, queryParams, headerParams);
       }
 
       protected async Task<IList<T>> PostCollectionNoMaskFromResponseCollectionProperty<T, P>(string _requestUri, string _responseCollectionPropertyName, P _payload = null, IDictionary<string, string> queryParams = null, IDictionary<string, string> headerParams = null) where P : class
@@ -438,7 +438,7 @@ namespace ws3dx.core.service
          HttpResponseMessage response = await PostAsync(_requestUri, _body: serializedPayload, _queryParameters: requestQueryParams, _headers: headerParams);
 
          //Handle the Response
-         if (response.StatusCode != System.Net.HttpStatusCode.OK)
+         if (!response.IsSuccessStatusCode)
          {
             // handle according to established exception policy
             throw (new HttpResponseException(response));
@@ -510,6 +510,17 @@ namespace ws3dx.core.service
          string responseContent = await Post<T>(_requestUri, _payload, queryParams, headerParams);
 
          return DeserializeCollection<T>(responseContent, _responseCollectionPropertyName);
+      }
+
+      protected async Task<(IList<T>, IList<string>)> PostBulkCollection<T, P>(string _requestUri, P _payload = null, IDictionary<string, string> queryParams = null, IDictionary<string, string> headerParams = null) where P : class
+      {
+         string responseContent = await Post<T>(_requestUri, _payload, queryParams, headerParams);
+
+         IList<T>  memberList = DeserializeCollection<T>(responseContent, "member");
+
+         IList<string> nonMemberList = DeserializeCollection<string>(responseContent, "nonmembers", true);
+
+         return (memberList, nonMemberList);
       }
       #endregion
 

@@ -375,6 +375,60 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (GET) dsprcs:MfgOperation/{PID}/dsprcs:ItemSpecification/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Get the dsprcs:ItemSpecification link under an operation. Summary: Get the 
+      // dsprcs:ItemSpecification link under an operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // <param name="itemSpecificationId">
+      // Description: dsprcs:ItemSpecification object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------		
+      public async Task<IItemSpecificationMask> GetItemSpecification(string mfgOperationId, string itemSpecificationId)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:ItemSpecification/{itemSpecificationId}";
+
+         return await GetIndividualFromResponseMemberProperty<IItemSpecificationMask>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (GET) dsprcs:MfgOperation/{PID}/dsprcs:ItemSpecification
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Gets all dsprcs:ItemSpecification link under operation. Summary: Gets all 
+      // dsprcs:ItemSpecification link under operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // <param name="top">
+      // Description: Represents the total number of items returned from the search, accepts a maximum 
+      // value of 10.
+      // </param>
+      // <param name="skip">
+      // Description: Represents the number of items to skip (to be used along with $top query parameter)
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------		
+      public async Task<IEnumerable<IItemSpecificationMask>> GetItemSpecifications(string mfgOperationId, int top, int skip)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:ItemSpecification";
+
+         IDictionary<string, string> queryParams = new Dictionary<string, string>();
+         queryParams.Add("$top", top.ToString());
+         queryParams.Add("$skip", skip.ToString());
+
+         return await GetCollectionFromResponseMemberProperty<IItemSpecificationMask>(resourceURI, queryParams: queryParams);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (GET) dsprcs:MfgOperation/{ID}/dsprcs:TimeConstraint
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -595,7 +649,9 @@ namespace ws3dx.dsprcs.core.service
       public async Task<T> Get<T>(string mfgOperationId)
       {
          GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationMask), typeof(IMfgOperationDetailMask) });
+
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}";
+
          return await GetIndividualFromResponseMemberProperty<T>(resourceURI);
       }
 
@@ -633,13 +689,12 @@ namespace ws3dx.dsprcs.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<ITypedUriIdentifier>> AttachConfiguration(string mfgOperationId, ITypedUriIdentifier[] request)
+      public async Task<ITypedUriIdentifierResources> AttachConfiguration(string mfgOperationId, ITypedUriIdentifier[] request)
       {
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dscfg:Configured/attach";
 
-         return await PostCollectionFromResponseResourcesProperty<ITypedUriIdentifier, ITypedUriIdentifier[]>(resourceURI, request);
+         return await PostIndividual<ITypedUriIdentifierResources, ITypedUriIdentifier[]>(resourceURI, request);
       }
-
       //---------------------------------------------------------------------------------------------
       // <remarks>
       // (POST) dsprcs:MfgOperation/{ID}/dslc:changeControl
@@ -657,6 +712,26 @@ namespace ws3dx.dsprcs.core.service
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dslc:changeControl";
 
          return await PostIndividual<IGenericResponse, IAddEmpty>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgOperation/{ID}/dsprcs:PrimaryCapableResource
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Primary Capable Resource link to an Manufacturing Operation. Summary: Create 
+      // Primary Capable Resource link to an Manufacturing Operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IPrimaryCapableResourceMask>> AttachPrimaryCapableResource(string mfgOperationId, ICreatePrimaryCapableResourceRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:PrimaryCapableResource";
+
+         return await PostCollectionFromResponseMemberProperty<IPrimaryCapableResourceMask, ICreatePrimaryCapableResourceRequest>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -703,6 +778,29 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (POST) dsprcs:MfgOperation/bulkfetch
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Gets multiple Manufacturing Operations which are Indexed. 
+      //  API Works only for Indexed Data only. 
+      //  The customer attributes or enterprise extension attributes are returned only with default sixw 
+      // mapping ds6wg:TypeName.AttributeName and it is not supported if the sixw predicate is changed. 
+      // Summary: Gets multiple Manufacturing Operations which are Indexed.
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<(IList<T>, IList<string>)> BulkFetch<T>(string[] request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationMask), typeof(IMfgOperationDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/bulkfetch";
+
+         return await PostBulkCollection<T, string[]>(resourceURI, request);
+
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (POST) dsprcs:MfgOperation/{ID}/dscfg:Configured/detach
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -714,11 +812,31 @@ namespace ws3dx.dsprcs.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<ITypedUriIdentifier>> DetachConfiguration(string mfgOperationId, ITypedUriIdentifier[] request)
+      public async Task<ITypedUriIdentifierResources> DetachConfiguration(string mfgOperationId, ITypedUriIdentifier[] request)
       {
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dscfg:Configured/detach";
 
-         return await PostCollectionFromResponseResourcesProperty<ITypedUriIdentifier, ITypedUriIdentifier[]>(resourceURI, request);
+         return await PostIndividual<ITypedUriIdentifierResources, ITypedUriIdentifier[]>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgOperation/{ID}/dsprcs:SecondaryCapableResource
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Primary Capable Resource to an Manufacturing Operation. Summary: Create 
+      // Secondary Capable Resource to an Manufacturing Operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<ISecondaryCapableResourceMask>> AttachSecondaryCapableResource(string mfgOperationId, ICreateSecondaryCapableResourceRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:SecondaryCapableResource";
+
+         return await PostCollectionFromResponseMemberProperty<ISecondaryCapableResourceMask, ICreateSecondaryCapableResourceRequest>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -777,6 +895,49 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (POST) dsprcs:MfgOperation/{ID}/dsprcs:MfgOperationInstance
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Manufacturing Operation Instance under an Manufacturing Operation. Summary: 
+      // Create Manufacturing Operation Instance under an Manufacturing Operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<T>> AddInstance<T>(string mfgOperationId, ICreateMfgOperationInstancesRefObject request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationInstanceMask), typeof(IMfgOperationInstanceDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:MfgOperationInstance";
+
+
+         return await PostCollectionFromResponseMemberProperty<T, ICreateMfgOperationInstancesRefObject>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgOperation/{PID}/dsprcs:ItemSpecification
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Creates dsprcs:ItemSpecification implement link under operation. Summary: Creates 
+      // dsprcs:ItemSpecification implement link under operation.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object PID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IItemSpecificationMask>> AttachItemSpecification(string mfgOperationId, IImplementLinkCreateRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:ItemSpecification";
+
+         return await PostCollectionFromResponseMemberProperty<IItemSpecificationMask, IImplementLinkCreateRequest>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (POST) dsprcs:MfgOperation/{PID}/dsprcs:MfgOperationInstance/{ID}/dscfg:Filterable/unset/evolution
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -796,6 +957,77 @@ namespace ws3dx.dsprcs.core.service
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:MfgOperationInstance/{mfgOperationInstanceId}/dscfg:Filterable/unset/evolution";
 
          return await PostIndividual<IUnitaryEvolutionEffectivity>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgOperation/{PID}/dsprcs:MfgOperationInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies the Manufacturing Operation Instance attributes under MfgOperation Summary: 
+      // Modifies the Manufacturing Operation Instance attributes under MfgOperation
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperationobject ID
+      // </param>
+      // <param name="mfgOperationInstanceId">
+      // Description: dsprcs:MfgOperationInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<T>> UpdateInstance<T>(string mfgOperationId, string mfgOperationInstanceId, IMfgOperationInstancePatch request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationInstanceMask), typeof(IMfgOperationInstanceDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:MfgOperationInstance/{mfgOperationInstanceId}";
+
+         return await PatchCollectionFromResponseMemberProperty<T, IMfgOperationInstancePatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgOperation/{PID}/dsprcs:ItemSpecification/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies the dsprcs:ItemSpecification Implement link attributes under operation 
+      // Summary: Modifies the dsprcs:ItemSpecification Implement link attributes under operation
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // <param name="itemSpecificationId">
+      // Description: dsprcs:ItemSpecification object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IItemSpecificationMask> UpdateItemSpecification(string mfgOperationId, string itemSpecificationId, IItemSpecificationPatch request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:ItemSpecification/{itemSpecificationId}";
+
+         return await PatchIndividualFromResponseMemberProperty<IItemSpecificationMask, IItemSpecificationPatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgOperation/{ID}/dsprcs:SecondaryCapableResource/{PID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies a Manufacturing Operation Secondary Capable Resource attributes Summary: 
+      // Modifies a Manufacturing Operation Secondary Capable Resource attributes
+      // <param name="secondaryResourceId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // <param name="mfgOperationId">
+      // Description: dsprcs:SecondaryCapableResource object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<ISecondaryCapableResourceMask> UpdateSecondaryCapableResource(string mfgOperationId, string secondaryResourceId, ISecondaryCapableResourcePatch request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:SecondaryCapableResource/{secondaryResourceId}";
+
+         return await PatchIndividualFromResponseMemberProperty<ISecondaryCapableResourceMask, ISecondaryCapableResourcePatch>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -840,6 +1072,48 @@ namespace ws3dx.dsprcs.core.service
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}";
 
          return await PatchIndividualFromResponseMemberProperty<T, IMfgOperationPatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgOperation/{ID}/dsprcs:PrimaryCapableResource/{PID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies a Manufacturing Operation Primary Capable Resource Summary: Modifies a 
+      // Manufacturing Operation Primary Capable Resource attributes
+      // <param name="primaryResourceId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // <param name="mfgOperationId">
+      // Description: dsprcs:PrimaryCapableResource object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IPrimaryCapableResourceMask> UpdatePrimaryCapableResource(string mfgOperationId, string primaryResourceId, IPrimaryCapableResourcePatch request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dsprcs:PrimaryCapableResource/{primaryResourceId}";
+
+         return await PatchIndividualFromResponseMemberProperty<IPrimaryCapableResourceMask, IPrimaryCapableResourcePatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (DELETE) dsprcs:MfgOperation/{ID}/dslc:changeControl
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Deactivate the Change Control. Summary: Deactivate the Change Control.
+      // <param name="mfgOperationId">
+      // Description: dsprcs:MfgOperation object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IGenericResponse> DetachChangeControl(string mfgOperationId)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgOperation/{mfgOperationId}/dslc:changeControl";
+
+         return await DeleteIndividual<IGenericResponse>(resourceURI);
       }
    }
 }

@@ -86,15 +86,27 @@ namespace ws3dx.dsbks.core.service
       // <param name="bookmarkId">
       // Description: dsbks:Bookmark object ID
       // </param>
+      // <param name="top">
+      // Description: Represents the total number of items returned under the bookmark, accepts a maximum 
+      // value of 1000 (to be used along with $mask query parameter having values dsbks:BksMask.Items and 
+      // dsbks:BksMask.Bookmarks)
+      // </param>
+      // <param name="skip">
+      // Description: Represents the number of items to skip (to be used along with $top query parameter)
+      // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------		
-      public async Task<IEnumerable<T>> Get<T>(string bookmarkId)
+      public async Task<IEnumerable<T>> Get<T>(string bookmarkId, string top, string skip)
       {
          GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IBookmarkMask), typeof(IBookmarkDetailMask), typeof(IBookmarkItemsMask), typeof(IBookmarkSubBookmarksMask), typeof(IBookmarkParentMask) });
 
          string resourceURI = $"{GetBaseResource()}/dsbks:Bookmark/{bookmarkId}";
 
-         return await GetCollectionFromResponseMemberProperty<T>(resourceURI);
+         IDictionary<string, string> queryParams = new Dictionary<string, string>();
+         queryParams.Add("$top", top);
+         queryParams.Add("$skip", skip);
+
+         return await GetCollectionFromResponseMemberProperty<T>(resourceURI, queryParams: queryParams);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -125,18 +137,30 @@ namespace ws3dx.dsbks.core.service
       // Description: Attaches multiple external items from a given bookmark and returns the bookmark or 
       // failure message in case of error. Maximum 50 items are allowed in a service call. Summary: Attaches 
       // the list of items in the given bookmark.
-      // <param name="ID">
+      // <param name="bookmarkId">
       // Description: dsbks:Bookmark object ID
+      // </param>
+      // <param name="top">
+      // Description: Represents the total number of items returned under the bookmark, accepts a maximum 
+      // value of 1000 (to be used along with $mask query parameter having values dsbks:BksMask.Items and 
+      // dsbks:BksMask.Bookmarks)
+      // </param>
+      // <param name="skip">
+      // Description: Represents the number of items to skip (to be used along with $top query parameter)
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<T>> Attach<T>(string bookmarkId, ITypedUriIdentifier[] request)
+      public async Task<IEnumerable<T>> Attach<T>(string bookmarkId, string top, string skip, ITypedUriIdentifier[] request)
       {
          GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IBookmarkMask), typeof(IBookmarkDetailMask), typeof(IBookmarkItemsMask), typeof(IBookmarkSubBookmarksMask), typeof(IBookmarkParentMask) });
 
          string resourceURI = $"{GetBaseResource()}/dsbks:Bookmark/{bookmarkId}/attach";
 
-         return await PostCollectionFromResponseMemberProperty<T, ITypedUriIdentifier[]>(resourceURI, request);
+         IDictionary<string, string> queryParams = new Dictionary<string, string>();
+         queryParams.Add("$top", top);
+         queryParams.Add("$skip", skip);
+
+         return await PostCollectionFromResponseMemberProperty<T, ITypedUriIdentifier[]>(resourceURI, request, queryParams: queryParams);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -166,18 +190,30 @@ namespace ws3dx.dsbks.core.service
       // Description: Detaches multiple external items from a given bookmark and returns the bookmark or 
       // failure message in case of error. Maximum 50 items are allowed in a service call. Summary: Detaches 
       // the list of items in the given bookmark.
-      // <param name="ID">
+      // <param name="bookmarkId">
       // Description: dsbks:Bookmark object ID
+      // </param>
+      // <param name="top">
+      // Description: Represents the total number of items returned under the bookmark, accepts a maximum 
+      // value of 1000 (to be used along with $mask query parameter having values dsbks:BksMask.Items and 
+      // dsbks:BksMask.Bookmarks)
+      // </param>
+      // <param name="skip">
+      // Description: Represents the number of items to skip (to be used along with $top query parameter)
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<T>> Detach<T>(string bookmarkId, ITypedUriIdentifier[] request)
+      public async Task<IEnumerable<T>> Detach<T>(string bookmarkId, string top, string skip, ITypedUriIdentifier[] request)
       {
          GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IBookmarkMask), typeof(IBookmarkDetailMask), typeof(IBookmarkItemsMask), typeof(IBookmarkSubBookmarksMask), typeof(IBookmarkParentMask) });
 
          string resourceURI = $"{GetBaseResource()}/dsbks:Bookmark/{bookmarkId}/detach";
 
-         return await PostCollectionFromResponseMemberProperty<T, ITypedUriIdentifier[]>(resourceURI, request);
+         IDictionary<string, string> queryParams = new Dictionary<string, string>();
+         queryParams.Add("$top", top);
+         queryParams.Add("$skip", skip);
+
+         return await PostCollectionFromResponseMemberProperty<T, ITypedUriIdentifier[]>(resourceURI, request, queryParams: queryParams);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -210,15 +246,27 @@ namespace ws3dx.dsbks.core.service
       // <param name="bookmarkId">
       // Description: dsbks:Bookmark object ID
       // </param>
+      // <param name="top">
+      // Description: Represents the total number of items returned under the bookmark, accepts a maximum 
+      // value of 1000 (to be used along with $mask query parameter having values dsbks:BksMask.Items and 
+      // dsbks:BksMask.Bookmarks)
+      // </param>
+      // <param name="skip">
+      // Description: Represents the number of items to skip (to be used along with $top query parameter)
+      // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<T> Update<T>(string bookmarkId, IModifyBookmark request)
+      public async Task<T> Update<T>(string bookmarkId, string top, string skip, IModifyBookmark request)
       {
          GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IBookmarkMask), typeof(IBookmarkDetailMask), typeof(IBookmarkItemsMask), typeof(IBookmarkSubBookmarksMask), typeof(IBookmarkParentMask), typeof(IBookmarkLinkableMask) });
 
          string resourceURI = $"{GetBaseResource()}/dsbks:Bookmark/{bookmarkId}";
 
-         return await PatchIndividualFromResponseMemberProperty<T, IModifyBookmark>(resourceURI, request);
+         IDictionary<string, string> queryParams = new Dictionary<string, string>();
+         queryParams.Add("$top", top);
+         queryParams.Add("$skip", skip);
+
+         return await PatchIndividualFromResponseMemberProperty<T, IModifyBookmark>(resourceURI, request, queryParams: queryParams);
       }
    }
 }

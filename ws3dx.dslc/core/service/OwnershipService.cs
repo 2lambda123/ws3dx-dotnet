@@ -45,11 +45,11 @@ namespace ws3dx.dslc.core.service
       // at a time. Summary: Transfer ownership
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<ITransfer>> Transfer(ITransferListInput request)
+      public async Task<IEnumerable<ITransferOutputPartialSuccessResult>> Transfer(ITransferListInput request)
       {
          string resourceURI = $"{GetBaseResource()}ownership/transfer";
 
-         return await PostCollectionFromResponseResultsProperty<ITransfer, ITransferListInput>(resourceURI, request);
+         return await PostCollectionFromResponseResultsProperty<ITransferOutputPartialSuccessResult, ITransferListInput>(resourceURI, request);
       }
    }
 }

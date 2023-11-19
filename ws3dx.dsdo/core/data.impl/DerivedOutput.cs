@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------
 // Copyright 2022 Dassault Systèmes - CPE EMED
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -22,15 +22,22 @@ namespace ws3dx.dsdo.core.data.impl
 {
    public class DerivedOutput : IDerivedOutput
    {
+      //------------------------------------------------------------------------------------------------
+      //<summary>
+      //
+      // Example: F6AF82561E5700005EB271EE0003C500
+      //
+      //<summary>
+      //------------------------------------------------------------------------------------------------
       [JsonPropertyName("id")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public string Id { get ; set ; }
+      public string Id { get; set; }
 
       [JsonPropertyName("referencedObject")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-      public ITypedUriId ReferencedObject { get ; set; }
+      public ITypedUriId ReferencedObject { get; set; }
 
-      [JsonPropertyName("derivedOutputfiles")]
+      [JsonPropertyName("derivedoutputfiles")]
       [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
       public IList<IDerivedOutputFileDetail> DerivedOutputFiles { get ; set ; }
    }

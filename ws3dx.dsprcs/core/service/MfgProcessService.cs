@@ -76,6 +76,7 @@ namespace ws3dx.dsprcs.core.service
          return await SearchCollection<T>("member", searchQuery, _skip, _top);
       }
       #endregion
+
       //---------------------------------------------------------------------------------------------
       // <remarks>
       // (GET) dsprcs:MfgProcess/{PID}/dsprcs:MfgOperationInstance/{ID}
@@ -468,25 +469,6 @@ namespace ws3dx.dsprcs.core.service
          return await GetIndividualFromResponseMemberProperty<IItemSpecificationMask>(resourceURI);
       }
 
-      //---------------------------------------------------------------------------------------------
-      // <remarks>
-      // (POST) dsprcs:MfgProcess/{ID}/dsprcs:ItemSpecification
-      // </remarks>
-      //---------------------------------------------------------------------------------------------
-      // <summary>
-      // Description: Creates dsprcs:ItemSpecification scope Link to an dsmfg:MfgItem. Summary: Creates 
-      // dsprcs:ItemSpecification scope Link to an dsmfg:MfgItem.
-      // <param name="mfgProcessId">
-      // Description: dsprcs:MfgProcess object ID
-      // </param>
-      // </summary>
-      //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<IItemSpecificationScopeMask>> AttachItemSpecification(string mfgProcessId, ICreateItemSpecificationRequest request)
-      {
-         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:ItemSpecification";
-
-         return await PostCollectionFromResponseMemberProperty<IItemSpecificationScopeMask, ICreateItemSpecificationRequest>(resourceURI, request);
-      }
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
@@ -532,6 +514,90 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (POST) dsprcs:MfgProcess/{ID}/dsprcs:MfgOperationInstance
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Manufacturing Operation Instance under an Manufacturing Process. Summary: 
+      // Create Manufacturing Operation Instance under an Manufacturing Process.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<T>> AddMfgOperationInstance<T>(string mfgProcessId, ICreateMfgOperationInstancesRefObject request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationInstanceMask), typeof(IMfgOperationInstanceDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:MfgOperationInstance";
+
+         return await PostCollectionFromResponseMemberProperty<T, ICreateMfgOperationInstancesRefObject>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/bulkfetch
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Gets multiple Manufacturing Processes which are Indexed. 
+      //  API Works only for Indexed Data only. 
+      //  The customer attributes or enterprise extension attributes are returned only with default sixw 
+      // mapping ds6wg:TypeName.AttributeName and it is not supported if the sixw predicate is changed. 
+      // Summary: Gets multiple Manufacturing Processes which are Indexed.
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<(IList<T>, IList<string>)> BulkFetch<T>(string[] request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgProcessMask), typeof(IMfgProcessDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/bulkfetch";
+
+         return await PostBulkCollection<T, string[]>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{ID}/dsprcs:AssetContext/attach
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Service to attach a dsprcs:AssetContextto a single reference. Summary: Service to 
+      // attach a dsprcs:AssetContext to a single reference.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IGenericResponse> AttachAssetContext(string mfgProcessId, ITypedUriIdentifier request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:AssetContext/attach";
+
+         return await PostIndividual<IGenericResponse, ITypedUriIdentifier>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{ID}/dsprcs:AssetContext/detach
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Service to detach a dsprcs:AssetContext from a single reference. Summary: Service to 
+      // detach a dsprcs:AssetContext from a single reference.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IGenericResponse> DetachAssetContext(string mfgProcessId, ITypedUriIdentifier request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:AssetContext/detach";
+
+         return await PostIndividual<IGenericResponse, ITypedUriIdentifier>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (POST) dsprcs:MfgProcess/locate
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -547,7 +613,7 @@ namespace ws3dx.dsprcs.core.service
       //  Additionally once the Manufacturing process is located based on matching criteria then response 
       // contains list of valid Manufacturing process references and also return its associated objects 
       // if defined in 'navigateTo' and 'navigateFrom'.
-      //  The supported types in 'navigateTo' is 'dsprcs:MfgProcessInstance'.
+      //  The supported types in 'navigateTo' is 'dsprcs:MfgProcessInstance' and 'dsrsc:ScopeLink'.
       //  And the supported types in 'navigateFrom' are dsprcs:PrimaryCapableResource, and dsprcs:ItemSpecification 
       // Summary: Locate or find set of Manufacturing Process dsprcs:MfgProcess based on the matched search 
       // criteria and other filter criteria.
@@ -587,11 +653,13 @@ namespace ws3dx.dsprcs.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<IMfgProcessExpandMaskV1>> AddExpand(string mfgProcessId, IMfgProcessExpandRequestPayloadV1 request)
+      public async Task<IEnumerable<T>> Expand<T>(string mfgProcessId, IMfgProcessExpandRequestPayloadV1 request)
       {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgProcessExpandMaskV1), typeof(IMfgProcessExpandMaskDetailV1) });
+
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/expand";
 
-         return await PostCollectionFromResponseMemberProperty<IMfgProcessExpandMaskV1, IMfgProcessExpandRequestPayloadV1>(resourceURI, request);
+         return await PostCollectionFromResponseMemberProperty<T, IMfgProcessExpandRequestPayloadV1>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -620,6 +688,50 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (POST) dsprcs:MfgProcess/{PID}/dsprcs:MfgProcessInstance/{ID}/replace
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Replace the Manufacturing Process Instance Summary: Replace the Manufacturing Process 
+      // Instance
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcessobject ID
+      // </param>
+      // <param name="mfgProcessInstanceId">
+      // Description: dsprcs:MfgProcessInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<T> ReplaceInstance<T>(string mfgProcessId, string mfgProcessInstanceId, IMfgProcessInstanceReplace request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgProcessInstanceMask), typeof(IMfgProcessInstanceDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:MfgProcessInstance/{mfgProcessInstanceId}/replace";
+
+         return await PostIndividualFromResponseMemberProperty<T, IMfgProcessInstanceReplace>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{PID}/dsprcs:PreAssignedWorkCenter
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create PreAssignedWorkCenter Link. Summary: Create PreAssignedWorkCenter Link.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IPreAssignedWorkCenterMask>> AttachPreAssignedWorkCenter(string mfgProcessId, ICreatePreAssignedWorkCenterRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:PreAssignedWorkCenter";
+
+         return await PostCollectionFromResponseMemberProperty<IPreAssignedWorkCenterMask, ICreatePreAssignedWorkCenterRequest>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (POST) dsprcs:MfgProcess/{ID}/dscfg:Configured/attach
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -631,11 +743,31 @@ namespace ws3dx.dsprcs.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<ITypedUriIdentifier>> AttachConfiguration(string mfgProcessId, ITypedUriIdentifier[] request)
+      public async Task<ITypedUriIdentifierResources> AttachConfiguration(string mfgProcessId, ITypedUriIdentifier[] request)
       {
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dscfg:Configured/attach";
 
-         return await PostCollectionFromResponseResourcesProperty<ITypedUriIdentifier, ITypedUriIdentifier[]>(resourceURI, request);
+         return await PostIndividual<ITypedUriIdentifierResources, ITypedUriIdentifier[]>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{ID}/dsprcs:PrimaryCapableResource
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Create Primary Capable Resource link to an Manufacturing Process. Summary: Create 
+      // Primary Capable Resource link to an Manufacturing Process.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IPrimaryCapableResourceMask>> AttachPrimaryCapableResource(string mfgProcessId, ICreatePrimaryCapableResourceRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:PrimaryCapableResource";
+
+         return await PostCollectionFromResponseMemberProperty<IPrimaryCapableResourceMask, ICreatePrimaryCapableResourceRequest>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -693,11 +825,11 @@ namespace ws3dx.dsprcs.core.service
       // </param>
       // </summary>
       //---------------------------------------------------------------------------------------------
-      public async Task<IEnumerable<ITypedUriIdentifier>> DetachConfiguration(string mfgProcessId, ITypedUriIdentifier[] request)
+      public async Task<ITypedUriIdentifierResources> DetachConfiguration(string mfgProcessId, ITypedUriIdentifier[] request)
       {
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dscfg:Configured/detach";
 
-         return await PostCollectionFromResponseResourcesProperty<ITypedUriIdentifier, ITypedUriIdentifier[]>(resourceURI, request);
+         return await PostIndividual<ITypedUriIdentifierResources, ITypedUriIdentifier[]>(resourceURI, request);
       }
 
       //---------------------------------------------------------------------------------------------
@@ -832,6 +964,29 @@ namespace ws3dx.dsprcs.core.service
 
       //---------------------------------------------------------------------------------------------
       // <remarks>
+      // (PATCH) dsprcs:MfgProcess/{PID}/dsprcs:ItemSpecification/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies the dsprcs:ItemSpecification Implement link attributes under process Summary: 
+      // Modifies the dsprcs:ItemSpecification Implement link attributes under process
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // <param name="itemSpecificationId">
+      // Description: dsprcs:ItemSpecification object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IItemSpecificationMask>> UpdateItemSpecification(string mfgProcessId, string itemSpecificationId, IItemSpecificationPatch request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:ItemSpecification/{itemSpecificationId}";
+
+         return await PatchCollectionFromResponseMemberProperty<IItemSpecificationMask, IItemSpecificationPatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
       // (PATCH) dsprcs:MfgProcess/{ID}/dscfg:Configured
       // </remarks>
       //---------------------------------------------------------------------------------------------
@@ -872,6 +1027,133 @@ namespace ws3dx.dsprcs.core.service
          string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}";
 
          return await PatchIndividual<T, IMfgProcessPatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgProcess/{ID}/dsprcs:PrimaryCapableResource/{PID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies a Manufacturing Process Primary Capable Resource Summary: Modifies a 
+      // Manufacturing Process Primary Capable Resource attributes
+      // <param name="primaryResourceId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // <param name="mfgProcessId">
+      // Description: dsprcs:PrimaryCapableResource object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IPrimaryCapableResourceMask> UpdatePrimaryCapableResource(string primaryResourceId, string mfgProcessId, IPrimaryCapableResourcePatch request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:PrimaryCapableResource/{primaryResourceId}";
+
+         return await PatchIndividualFromResponseMemberProperty<IPrimaryCapableResourceMask, IPrimaryCapableResourcePatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (PATCH) dsprcs:MfgProcess/{PID}/dsprcs:MfgOperationInstance/{ID}
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Modifies the Manufacturing Operation Instance attributes under MfgProcess Summary: 
+      // Modifies the Manufacturing Operation Instance attributes under MfgProcess
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcessobject ID
+      // </param>
+      // <param name="mfgOperationInstanceId">
+      // Description: dsprcs:MfgOperationInstance object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<T> UpdateMfgOperationInstance<T>(string mfgProcessId, string mfgOperationInstanceId, IMfgOperationInstancePatch request)
+      {
+         GenericParameterConstraintUtils.CheckConstraints(typeof(T), new Type[] { typeof(IMfgOperationInstanceMask), typeof(IMfgOperationInstanceDetailMask) });
+
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:MfgOperationInstance/{mfgOperationInstanceId}";
+
+         return await PatchIndividualFromResponseMemberProperty<T, IMfgOperationInstancePatch>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (DELETE) dsprcs:MfgProcess/{ID}/dslc:changeControl
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Deactivate the Change Control. Summary: Deactivate the Change Control.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object ID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IGenericResponse> DetachChangeControl(string mfgProcessId)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dslc:changeControl";
+
+         return await DeleteIndividual<IGenericResponse>(resourceURI);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{PID}/dsprcs:ItemSpecification
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Creates dsprcs:ItemSpecification scope Link or implement link under process. Summary: 
+      // Creates dsprcs:ItemSpecification scope Link or implement link under process.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object PID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IItemSpecificationMask>> AttachItemSpecification(string mfgProcessId, IScopeItemCreateRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:ItemSpecification";
+
+         return await PostCollectionFromResponseMemberProperty<IItemSpecificationMask, IScopeItemCreateRequest>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{PID}/dsprcs:ItemSpecification
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Creates dsprcs:ItemSpecification scope Link or implement link under process. Summary: 
+      // Creates dsprcs:ItemSpecification scope Link or implement link under process.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object PID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IItemSpecificationMask>> AttachItemSpecification(string mfgProcessId, IScopeItemWithContextCreateRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:ItemSpecification";
+
+         return await PostCollectionFromResponseMemberProperty<IItemSpecificationMask, IScopeItemWithContextCreateRequest>(resourceURI, request);
+      }
+
+      //---------------------------------------------------------------------------------------------
+      // <remarks>
+      // (POST) dsprcs:MfgProcess/{PID}/dsprcs:ItemSpecification
+      // </remarks>
+      //---------------------------------------------------------------------------------------------
+      // <summary>
+      // Description: Creates dsprcs:ItemSpecification scope Link or implement link under process. Summary: 
+      // Creates dsprcs:ItemSpecification scope Link or implement link under process.
+      // <param name="mfgProcessId">
+      // Description: dsprcs:MfgProcess object PID
+      // </param>
+      // </summary>
+      //---------------------------------------------------------------------------------------------
+      public async Task<IEnumerable<IItemSpecificationMask>> AttachItemSpecification(string mfgProcessId, IImplementLinkCreateRequest request)
+      {
+         string resourceURI = $"{GetBaseResource()}dsprcs:MfgProcess/{mfgProcessId}/dsprcs:ItemSpecification";
+
+         return await PostCollectionFromResponseMemberProperty<IItemSpecificationMask, IImplementLinkCreateRequest>(resourceURI, request);
       }
    }
 }

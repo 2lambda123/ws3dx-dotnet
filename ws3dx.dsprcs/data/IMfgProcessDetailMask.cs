@@ -13,6 +13,7 @@
 // BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //------------------------------------------------------------------------------------------------------------------------------------
+using ws3dx.dsmfg.data.extension;
 using ws3dx.dsprcs.data.extension;
 using ws3dx.serialization.attribute;
 
@@ -145,7 +146,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int Capacity { get; set; }
+      public int? Capacity { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -154,7 +155,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double CycleTime { get; set; }
+      public double? CycleTime { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -163,7 +164,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int FlowModeIN { get; set; }
+      public int? FlowModeIN { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -172,7 +173,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int FlowModeOUT { get; set; }
+      public int? FlowModeOUT { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -181,7 +182,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double MeanTimeBetweenFailure { get; set; }
+      public double? MeanTimeBetweenFailure { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -190,7 +191,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double MeanTimeToRepair { get; set; }
+      public double? MeanTimeToRepair { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -199,7 +200,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int OperationMode { get; set; }
+      public int? OperationMode { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -208,7 +209,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int QueuingModeIN { get; set; }
+      public int? QueuingModeIN { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -217,7 +218,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int QueuingModeOUT { get; set; }
+      public int? QueuingModeOUT { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -226,7 +227,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double TotalProductionTime { get; set; }
+      public double? TotalProductionTime { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -235,7 +236,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double EstimatedDistance { get; set; }
+      public double? EstimatedDistance { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -244,7 +245,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int TransferMode { get; set; }
+      public int? TransferMode { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -253,7 +254,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public int ArrivalMode { get; set; }
+      public int? ArrivalMode { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -262,7 +263,7 @@ namespace ws3dx.dsprcs.data
       //
       // </summary>
       //----------------------------------------------------------------
-      public double InitialDelay { get; set; }
+      public double? InitialDelay { get; set; }
 
       //----------------------------------------------------------------
       // <summary>
@@ -277,20 +278,24 @@ namespace ws3dx.dsprcs.data
 
       public IWorkPlanEnterpriseAttributes WorkPlanEnterpriseAttributes { get; set; }
 
-      public IQtyControlProcessReferenceEnterpriseAttributes DELLmiQtyControlProcessReferenceEnterpriseAttributes { get; set; }
+      public IQtyControlProcessReferenceEnterpriseAttributes QtyControlProcessReferenceEnterpriseAttributes { get; set; }
 
-      public IGeneralSystemReferenceEnterpriseAttributes DELLmiGeneralSystemReferenceEnterpriseAttributes { get; set; }
+      public IGeneralSystemReferenceEnterpriseAttributes GeneralSystemReferenceEnterpriseAttributes { get; set; }
 
-      public ITransformationSystemReferenceEnterpriseAttributes DELLmiTransformationSystemReferenceEnterpriseAttributes { get; set; }
+      public ITransformationSystemReferenceEnterpriseAttributes TransformationSystemReferenceEnterpriseAttributes { get; set; }
 
-      public ITransferSystemReferenceEnterpriseAttributes DELLmiTransferSystemReferenceEnterpriseAttributes { get; set; }
+      public ITransferSystemReferenceEnterpriseAttributes TransferSystemReferenceEnterpriseAttributes { get; set; }
 
-      public IStorageSystemReferenceEnterpriseAttributes DELLmiStorageSystemReferenceEnterpriseAttributes { get; set; }
+      public IStorageSystemReferenceEnterpriseAttributes StorageSystemReferenceEnterpriseAttributes { get; set; }
 
       public IBufferSystemEnterpriseAttributes BufferSystemEnterpriseAttributes { get; set; }
 
       public ISinkSystemEnterpriseAttributes SinkSystemEnterpriseAttributes { get; set; }
 
       public ISourceSystemEnterpriseAttributes SourceSystemEnterpriseAttributes { get; set; }
+
+      public IServiceHeaderWorkPlanEnterpriseAttributes ServiceHeaderWorkPlanEnterpriseAttributes { get; set; }
+
+      public IServiceWorkPlanEnterpriseAttributes ServiceWorkPlanEnterpriseAttributes { get; set; }
    }
 }
